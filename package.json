@@ -1,0 +1,18 @@
+{
+  "name": "node-express-postgres-docker-wop",
+  "version": "1.0.0",
+  "description": "A Node.js and Express application with PostgreSQL using Docker Compose",
+  "main": "www/app.js",
+  "scripts": {
+    "start": "node app.js",
+    "serve": "nodemon www/app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
