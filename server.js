@@ -2,14 +2,15 @@ const express = require("express");
 // const http = require("http");
 // const { Server } = require("socket.io");
 const cors = require("cors");
-// const NotFoundError = require("./errors/not-found");
-// const auhRouter = require("./api/auth/auth.router");
-// const userRouter = require("./api/users/users.router");
-// const scoresRouter = require("./api/scores/scores.router");
-// const gamesRouter = require("./api/games/games.router");
-// const authMiddleware = require("./middlewares/authenticate");
+const NotFoundError = require("./errors/not-found");
+const auhRouter = require("./api/auth/auth.router");
+const userRouter = require("./api/users/user.router");
+const scoresRouter = require("./api/scores/score.router");
+const gamesRouter = require("./api/games/game.router");
+const authMiddleware = require("./middlewares/authenticate");
 // const forestAdmin = require("./forest");
 const app = express();
+const sequelize = require("./config/db");
 
 // const server = http.createServer(app);
 // const io = new Server(server);
@@ -31,14 +32,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// app.use("/api/auth", auhRouter);
-// app.use("/api/users", authMiddleware, userRouter);
-// app.use("/api/scores", authMiddleware, scoresRouter);
-// app.use("/api/games", authMiddleware, gamesRouter);
+app.use("/api/auth", auhRouter);
+app.use("/api/users", authMiddleware, userRouter);
+app.use("/api/scores", authMiddleware, scoresRouter);
+app.use("/api/games", authMiddleware, gamesRouter);
 
 app.use("/", express.static("public"));
 
-app.use((req, res, next) => {
+app.use((error, req, res, next) => {
   next(new NotFoundError());
 });
 
@@ -50,6 +51,19 @@ app.use((error, req, res, next) => {
     status,
     message,
   });
+});
+
+const printDbOk = "Connection has been established successfully.";
+
+app.get("/", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    console.log(printDbOk);
+    res.status(200).send(printDbOk);
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+    res.status(500).send("Server Error");
+  }
 });
 
 module.exports = {

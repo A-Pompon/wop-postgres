@@ -10,14 +10,14 @@ CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(100) NOT NULL,
     race race_enum NOT NULL,
     role role_enum NOT NULL,
     date_creation DATE NOT NULL
 );
 
 -- Table des amis (relation many-to-many entre les utilisateurs)
-CREATE TABLE Followed (
+CREATE TABLE Followeds (
     user_id INT NOT NULL,
     followed_id INT NOT NULL,
     PRIMARY KEY (user_id, followed_id),
@@ -26,7 +26,7 @@ CREATE TABLE Followed (
 );
 
 -- Table des jeux
-CREATE TABLE Game (
+CREATE TABLE Games (
     game_id SERIAL PRIMARY KEY,
     nameGame VARCHAR(100) NOT NULL
 );
