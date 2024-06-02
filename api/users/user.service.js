@@ -21,44 +21,64 @@ class UserService {
     return user;
   }
 
-  async getFriendsWithScores(userId) {
-    const user = await this.getMyProfil(userId);
+  async getFollowedUsers(userId) {
+    const user = await User.findByPk(userId);
     if (!user) throw new Error("User not found");
 
-    const friends = await user.getFolloweds({
-      include: {
-        model: Score,
-        as: "Scores",
-        attributes: ["victories", "defeats", "points"],
-      },
+    // Récupérer les utilisateurs suivis
+    const followedUsers = await user.getFollowings({
+      attributes: ["user_id", "name", "race"],
     });
 
-    return friends.map((friend) => ({
-      id: friend.user_id,
-      name: friend.name,
-      race: friend.race,
-      score: friend.Scores || { victories: 0, defeats: 0, points: 0 },
-    }));
+    // Récupérer les scores pour chaque utilisateur suivi
+    const followedUsersWithScores = await Promise.all(
+      followedUsers.map(async (followedUser) => {
+        const scores = await Score.findAll({
+          where: { user_id: followedUser.user_id },
+          attributes: ["victories", "defeats", "points"],
+          raw: true,
+        });
+        followedUser.dataValues.Scores = scores || {
+          victories: 0,
+          defeats: 0,
+          points: 0,
+        };
+        return followedUser;
+      })
+    );
+
+    return followedUsersWithScores;
   }
-  // PB AVEC LE user_id et followed_id qui s'inverse, revoir MODEL ???
+
+  // async getFollowedUsers(userId) {
+  //   const user = await this.getMyProfil(userId);
+  //   if (!user) throw new Error("User not found");
+
+  //   const followedUsers = await user.getFollowings({
+  //     attributes: ["user_id", "name", "race"], // Sélectionnez les colonnes à retourner
+  //   });
+
+  //   return followedUsers;
+  // }
+
   async addFriend(userId, friendId) {
-    const user = await User.findByPk(userId);
-    const friend = await User.findByPk(friendId);
+    const followed = await User.findByPk(friendId);
+    const follower = await User.findByPk(userId);
 
-    if (!user || !friend) throw new Error("User or Friend not found");
+    if (!followed || !follower) throw new Error("User or Friend not found");
 
-    await user.addFollowed(friend);
-    return user;
+    await followed.addFollower(follower);
+    return followed;
   }
 
   async deleteFriend(userId, friendId) {
-    const user = await User.findByPk(userId);
-    const friend = await User.findByPk(friendId);
+    const followed = await User.findByPk(friendId);
+    const follower = await User.findByPk(userId);
 
-    if (!user || !friend) throw new Error("User or Friend not found");
+    if (!followed || !follower) throw new Error("User or Friend not found");
 
-    await user.removeFollowed(friend);
-    return user;
+    await followed.removeFollower(follower);
+    return followed;
   }
 
   async deleteUser(id) {

@@ -13,7 +13,6 @@ CREATE TABLE Users (
     password VARCHAR(100) NOT NULL,
     race race_enum NOT NULL,
     role role_enum NOT NULL,
-    date_creation DATE NOT NULL
 );
 
 -- Table des amis (relation many-to-many entre les utilisateurs)

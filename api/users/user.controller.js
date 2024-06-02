@@ -36,10 +36,10 @@ class UsersController {
     }
   }
 
-  async getFriendsWithScores(req, res, next) {
+  async getFollowedsWithScores(req, res, next) {
     try {
       const userId = req.userId;
-      const friendsWithScores = await usersService.getFriendsWithScores(userId);
+      const friendsWithScores = await usersService.getFollowedUsers(userId);
       res.json(friendsWithScores);
     } catch (error) {
       next(error);
@@ -94,7 +94,7 @@ class UsersController {
     }
   }
 
-  async addFriend(req, res, next) {
+  async addFollowed(req, res, next) {
     try {
       const { friendId } = req.body;
       const userId = req.userId;
@@ -105,7 +105,7 @@ class UsersController {
     }
   }
 
-  async deleteFriend(req, res, next) {
+  async deleteFollowed(req, res, next) {
     try {
       const { friendId } = req.body;
       const userId = req.userId;
