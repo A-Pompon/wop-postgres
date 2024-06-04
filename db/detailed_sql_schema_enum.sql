@@ -15,13 +15,13 @@ CREATE TABLE Users (
     role role_enum NOT NULL,
 );
 
--- Table des amis (relation many-to-many entre les utilisateurs)
-CREATE TABLE Followeds (
-    user_id INT NOT NULL,
+-- Table Followed (relation many-to-many entre les utilisateurs)
+CREATE TABLE "Followed" (
+    follower_id INT NOT NULL,
     followed_id INT NOT NULL,
-    PRIMARY KEY (user_id, followed_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (followed_id) REFERENCES Users(user_id) ON DELETE CASCADE
+    PRIMARY KEY (follower_id, followed_id),
+    FOREIGN KEY (follower_id) REFERENCES "User"(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES "User"(user_id) ON DELETE CASCADE
 );
 
 -- Table des jeux

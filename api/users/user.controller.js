@@ -39,7 +39,9 @@ class UsersController {
   async getFollowedsWithScores(req, res, next) {
     try {
       const userId = req.userId;
-      const friendsWithScores = await usersService.getFollowedUsers(userId);
+      const friendsWithScores = await usersService.getFollowedUsersWithScores(
+        userId
+      );
       res.json(friendsWithScores);
     } catch (error) {
       next(error);

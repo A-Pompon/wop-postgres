@@ -21,7 +21,7 @@ class UserService {
     return user;
   }
 
-  async getFollowedUsers(userId) {
+  async getFollowedUsersWithScores(userId) {
     const user = await User.findByPk(userId);
     if (!user) throw new Error("User not found");
 
